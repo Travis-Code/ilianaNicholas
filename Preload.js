@@ -1,4 +1,4 @@
-var Parkour = Parkour ||{
+var Parkour = Parkour ||{};
 
 	//load game assets
 	Parkour.PreloadState = {
@@ -9,10 +9,13 @@ var Parkour = Parkour ||{
 			this.loadingBar.scale.setTo(3);
 			//method that expands the loading bar from 0-100%
 			this.load.setPreloadSprite(this.loadingBar);
-
 			//load assets
-			this.load.image();
+		this.load.image("player", "assets/sprites/parkourKid.png");
+		this.load.image("arrowButton", "assets/sprites/arrowButton.png");
+		this.load.image("actionButton", "assets/sprites/actionButton.png");
 
 		},
-	}
-};
+		create:function(){
+			this.state.start("Game");
+		}
+	};
