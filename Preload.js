@@ -1,4 +1,4 @@
-var Parkour = Parkour ||{};
+var Parkour = Parkour || {};
 
 	//load game assets
 	Parkour.PreloadState = {
@@ -13,6 +13,19 @@ var Parkour = Parkour ||{};
 		this.load.image("player", "assets/sprites/parkourKid.png");
 		this.load.image("arrowButton", "assets/sprites/arrowButton.png");
 		this.load.image("actionButton", "assets/sprites/actionButton.png");
+	    this.load.spritesheet('fire', 'assets/sprites/fire_spritesheet.png', 20, 21, 2, 1, 1);      
+	    //this.load.image('barrel', 'assets/sprites/barrel.png');    
+	    this.load.image('goal', 'assets/sprites/gorilla3.png');    
+	    this.load.image('platform', 'assets/sprites/platform.png');    
+	    this.load.image('ground', 'assets/sprites/ground.png');    
+	    this.load.image('cloud', 'assets/sprites/clouds.png');    
+	    this.load.image('box', 'assets/sprites/box.png');    
+	    this.load.image('water', 'assets/sprites/water.png');    
+	    this.load.image('wood', 'assets/sprites/wood.png');    
+
+
+	    //load json file.
+	    this.load.text("level", "assets/prefabrications/level.json");
 
 		},
 		create:function(){
