@@ -1,4 +1,4 @@
-var Parkour = Parkour || {};
+/*var Parkour = Parkour || {};
 
 //calculate the dimensions of the game so that 100% of the screen is occupied
 Parkour.getGameLandscapeDimensions = function(max_w, max_h) {
@@ -28,4 +28,4 @@ Parkour.getGameLandscapeDimensions = function(max_w, max_h) {
     w: landW,
     h: landH
   }
-}
+}*/
