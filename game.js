@@ -50,26 +50,25 @@ Parkour.GameState = {
         this.game.physics.arcade.collide(this.box, this.grounds);
 
         this.game.physics.arcade.overlap(this.player, this.waters, this.drownPlayer);
-        this.game.physics.arcade.overlap(this.player, this.ladder, this.climbLadder);
+       // this.game.physics.arcade.overlap(this.player, this.ladder, this.climbLadder);
 
         this.player.body.velocity.x = 0;
 
         if (this.cursors.left.isDown || this.player.customParams.isMovingLeft) {
             this.player.body.velocity.x = -this.RUNNING_SPEED;
-            this.player.scale.setTo(1, 1);
-            this.player.play("playerWalking");
-        } else {
-            this.player.animations.stop();
-            this.player.frame = 3;
-        }
-
-        if (this.cursors.right.isDown || this.player.customParams.isMovingRight) {
-            this.player.body.velocity.x = this.RUNNING_SPEED;
             this.player.scale.setTo(-1, 1);
-            this.player.play("playerWalking");
-        } else {
+            this.player.play("player");
+        } 
+
+        else if (this.cursors.right.isDown || this.player.customParams.isMovingRight) {
+            this.player.body.velocity.x = this.RUNNING_SPEED;
+            this.player.scale.setTo(1, 1);
+            this.player.play("player");
+        } 
+
+        else {
             this.player.animations.stop();
-            this.player.frame = 3;
+            this.player.frame = 5;
         }
 
         if ((this.cursors.up.isDown || this.player.customParams.mustJump) && (this.player.body.blocked.down || this.player.body.touching.down)) {
@@ -80,12 +79,15 @@ Parkour.GameState = {
         this.game.physics.arcade.overlap(this.player, this.ladder, null, function(p,l)
         {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
+            this.player.play("playerJump");
+
+
         }, this);
     },
 
     drownPlayer: function(player, water) {
         console.log('auch!');
-        //Parkour.game.state.start('Game');
+        Parkour.game.state.start('Game');
     },
    
     loadLevel: function() {
@@ -167,12 +169,16 @@ Parkour.GameState = {
         this.box.body.moves = false;
 
         //create player.
-        this.player = this.add.sprite(40, this.game.height/2-40, 'playerWalking', 3);
+        this.player = this.add.sprite(40, this.game.height/2-40, 'player', 5);
         this.player.anchor.setTo(0.5);
+        this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
+        this.player.animations.add("playerJump", [6, 7], 7, true);
+
 
         // 0 is the first frame in the array, then 1,2,1, 6 refers to the fps, true means forever
         //this.player.animations.add('playerWalking', [0, 1, 2, 1], 6, true);
-        this.player.animations.add("playerWalking", [0,1,2,1], 7, true);
+
+
         this.game.physics.arcade.enable(this.player);
 
         //create a custom object for the player controls.
@@ -185,65 +191,65 @@ Parkour.GameState = {
         this.game.camera.follow(this.player);
     },
 
-    createOnscreenControls: function() {
-        this.leftArrow = this.add.button(20, this.game.height - 60, 'arrowButton');
-        this.rightArrow = this.add.button(180, this.game.height - 60, 'arrowButton');
-        this.rightArrow.scale.x = -1;
-        this.actionButton = this.add.button(this.game.width - 100, this.game.height - 60, 'actionButton');
+createOnscreenControls: function() {
+    this.leftArrow = this.add.button(20, this.game.height - 60, 'arrowButton');
+    this.rightArrow = this.add.button(180, this.game.height - 60, 'arrowButton');
+    this.rightArrow.scale.x = -1;
+    this.actionButton = this.add.button(this.game.width - 100, this.game.height - 60, 'actionButton');
 
-        this.leftArrow.alpha = 0.5;
-        this.rightArrow.alpha = 0.5;
-        this.actionButton.alpha = 1;
+    this.leftArrow.alpha = 0.5;
+    this.rightArrow.alpha = 0.5;
+    this.actionButton.alpha = 1;
 
-        this.leftArrow.fixedToCamera = true;
-        this.rightArrow.fixedToCamera = true;
-        this.actionButton.fixedToCamera = true;
+    this.leftArrow.fixedToCamera = true;
+    this.rightArrow.fixedToCamera = true;
+    this.actionButton.fixedToCamera = true;
 
-        this.actionButton.events.onInputUp.add(function() {
-            this.player.customParams.mustJump = false;
-        }, this);
+    this.actionButton.events.onInputUp.add(function() {
+        this.player.customParams.mustJump = false;
+    }, this);
 
-        //jump
-        this.actionButton.events.onInputDown.add(function() {
-            this.player.customParams.mustJump = true;
-        }, this);
+    //jump
+    this.actionButton.events.onInputDown.add(function() {
+        this.player.customParams.mustJump = true;
+    }, this);
 
-        this.actionButton.events.onInputUp.add(function() {
-            this.player.customParams.mustJump = false;
-        }, this);
+    this.actionButton.events.onInputUp.add(function() {
+        this.player.customParams.mustJump = false;
+    }, this);
 
-        //left
-        this.leftArrow.events.onInputDown.add(function() {
-            this.player.customParams.isMovingLeft = true;
-        }, this);
+    //left
+    this.leftArrow.events.onInputDown.add(function() {
+        this.player.customParams.isMovingLeft = true;
+    }, this);
 
-        this.leftArrow.events.onInputUp.add(function() {
-            this.player.customParams.isMovingLeft = false;
-        }, this);
+    this.leftArrow.events.onInputUp.add(function() {
+        this.player.customParams.isMovingLeft = false;
+    }, this);
 
-        this.leftArrow.events.onInputOver.add(function() {
-            this.player.customParams.isMovingLeft = true;
-        }, this);
+    this.leftArrow.events.onInputOver.add(function() {
+        this.player.customParams.isMovingLeft = true;
+    }, this);
 
-        this.leftArrow.events.onInputOut.add(function() {
-            this.player.customParams.isMovingLeft = false;
-        }, this);
+    this.leftArrow.events.onInputOut.add(function() {
+        this.player.customParams.isMovingLeft = false;
+    }, this);
 
-        //right
-        this.rightArrow.events.onInputDown.add(function() {
-            this.player.customParams.isMovingRight = true;
-        }, this);
+    //right
+    this.rightArrow.events.onInputDown.add(function() {
+        this.player.customParams.isMovingRight = true;
+    }, this);
 
-        this.rightArrow.events.onInputUp.add(function() {
-            this.player.customParams.isMovingRight = false;
-        }, this);
+    this.rightArrow.events.onInputUp.add(function() {
+        this.player.customParams.isMovingRight = false;
+    }, this);
 
-        this.rightArrow.events.onInputOver.add(function() {
-            this.player.customParams.isMovingRight = true;
-        }, this);
+    this.rightArrow.events.onInputOver.add(function() {
+        this.player.customParams.isMovingRight = true;
+    }, this);
 
-        this.rightArrow.events.onInputOut.add(function() {
-            this.player.customParams.isMovingRight = false;
-        }, this);
-    }
+    this.rightArrow.events.onInputOut.add(function() {
+        this.player.customParams.isMovingRight = false;
+    }, this);
+}
 };

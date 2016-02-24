@@ -13,7 +13,7 @@ var Parkour = Parkour || {};
 		//this.load.image("player", "assets/sprites/parkourKid.png");
 		this.load.image("arrowButton", "assets/sprites/arrowButton.png");
 		this.load.image("actionButton", "assets/sprites/actionButton.png");
-	    this.load.spritesheet('fire', 'assets/sprites/fire_spritesheet.png', 20, 21, 2, 1, 1);      
+	    //this.load.spritesheet('fire', 'assets/sprites/fire_spritesheet.png', 20, 21, 2, 1, 1);      
 	    //this.load.image('barrel', 'assets/sprites/barrel.png');    
 	    this.load.image('goal', 'assets/sprites/gorilla3.png');    
 	    this.load.image('platform', 'assets/sprites/platform.png');    
@@ -27,7 +27,10 @@ var Parkour = Parkour || {};
 	    this.load.image('danger', 'assets/sprites/danger.png');
 
 	    //spritesheet ("key", "path", xframeSize, yframeSize, num of frames in sheet.)    
-	    this.load.spritesheet("playerWalking", "assets/sprites/parkourKidSheet.png",40.75,83);
+	    //this.load.spritesheet("player", "assets/sprites/playerIdle.png",60,84);
+	    this.load.spritesheet("player", "assets/sprites/playerRunJump.png",52,86);
+
+	    //this.load.spritesheet("player", "assets/sprites/player_spritesheet.png",28, 30, 5, 1,1);
 
 	    //load json file.
 	    this.load.text("level", "assets/prefabrications/level.json");
