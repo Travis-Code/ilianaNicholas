@@ -9,6 +9,7 @@ var Parkour = Parkour || {};
 Parkour.game = new Phaser.Game(700, 414, Phaser.AUTO);
 Parkour.game.state.add("Boot", Parkour.BootState);
 Parkour.game.state.add("Preload", Parkour.PreloadState);
+Parkour.game.state.add("TitleScreen", Parkour.titleScreenState);
 Parkour.game.state.add("Game", Parkour.GameState);
 
 //start our boot state

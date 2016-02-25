@@ -25,6 +25,18 @@ var Parkour = Parkour || {};
 	    this.load.image('wood', 'assets/sprites/wood.png');    
 	    this.load.image('ladder', 'assets/sprites/ladder.png');
 	    this.load.image('danger', 'assets/sprites/danger.png');
+	  	this.load.image('marioHat', 'assets/sprites/marioHat.png');
+	    this.load.image('pipeWarp', 'assets/sprites/pipeWarp.png');
+	    this.load.image('backgroundCity', 'assets/sprites/backgroundPic.png');
+	    this.load.image('superPKTitle', 'assets/sprites/superPKTitle.png');
+	    this.load.image('playButton', 'assets/sprites/playButton.png');
+
+
+
+	    this.game.load.audio("coolHipHop", ["assets/sprites/coolHipHop.mp3","assets/sounds/coolHipHop.ogg"]);
+	    this.game.load.audio("jumpPark", ["assets/sprites/jumpPark.mp3","assets/sounds/jumpPark.ogg"]);
+
+
 
 	    //spritesheet ("key", "path", xframeSize, yframeSize, num of frames in sheet.)    
 	    //this.load.spritesheet("player", "assets/sprites/playerIdle.png",60,84);
@@ -37,6 +49,6 @@ var Parkour = Parkour || {};
 
 		},
 		create:function(){
-			this.state.start("Game");
+			this.state.start("TitleScreen");
 		}
 	};

@@ -19,13 +19,14 @@ Parkour.GameState = {
         this.cursors = this.game.input.keyboard.createCursorKeys();
     },
     create: function() {
+        this.playerAlive = true;
+        //this.game.bgMusic = this.game.add.audio("coolHipHop");
+        //this.game.bgMusic.loopFull(1);
 
         //load current level method.
         this.loadLevel();
         //this.createOnscreenControls();
         this.createOnscreenControls();
-       
-
 
         //test Monster class method.
         //test monster class.
@@ -37,21 +38,39 @@ Parkour.GameState = {
 
     update: function() {
 
-        //paralax2.x= this.game.camera.x*0.1; 
-        //paralax2.y= this.game.camera.y*0.1+340;
+        paralax2.x= this.game.camera.x*0.15; 
+        paralax2.y= this.game.camera.y*0.1+340;
         paralax1.x= this.game.camera.x*0.2;
         paralax1.y= this.game.camera.y*0.2-300; //move it down a few pixels to account for the missing pixels when moving with camera
 
         //set up collisions for ground and platforms.
         this.game.physics.arcade.collide(this.player, this.grounds);
+        this.game.physics.arcade.collide(this.player, this.pipeWarp);
         this.game.physics.arcade.collide(this.player, this.platforms);
         this.game.physics.arcade.collide(this.player, this.box);
         this.game.physics.arcade.collide(this.player, this.wood);
         this.game.physics.arcade.collide(this.box, this.grounds);
+        this.game.physics.arcade.overlap(this.player, this.hat);
 
-        this.game.physics.arcade.overlap(this.player, this.waters, this.drownPlayer);
+        
+        if(this.playerAlive){
+            this.game.physics.arcade.overlap(this.player, this.waters, null, function(p,w){
+                //this.game.bgMusic.stop();
+                console.log('auch!');
+                Parkour.game.state.start('Game');
+            },this);
+        }      
+       
+        if(this.playerAlive){
+            this.game.physics.arcade.overlap(this.player, this.hat, null, function(p,h){
+                //this.game.bgMusic.stop();
+                console.log('got the hat!');
+                Parkour.game.state.start('TitleScreen');
+            },this);
+        }      
+
        // this.game.physics.arcade.overlap(this.player, this.ladder, this.climbLadder);
-
+        
         this.player.body.velocity.x = 0;
 
         if (this.cursors.left.isDown || this.player.customParams.isMovingLeft) {
@@ -74,29 +93,30 @@ Parkour.GameState = {
         if ((this.cursors.up.isDown || this.player.customParams.mustJump) && (this.player.body.blocked.down || this.player.body.touching.down)) {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
             this.player.customParams.mustJump = false;
+            var jumper = this.game.add.audio("jumpPark");
+            var jump = this.game.add.tween(this.player).to({
+                            //x: this.player.x + this.game.rnd.between(100, 200),
+                            //y: this.player.y + this.game.rnd.between(-500, 800),
+                            rotation: 6.3
+                        }, 1000, Phaser.Easing.Linear.None, true);
+                jumper.play();
         }
 
         this.game.physics.arcade.overlap(this.player, this.ladder, null, function(p,l)
         {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
-            this.player.play("playerJump");
-
-
         }, this);
-    },
+    }, 
 
-    drownPlayer: function(player, water) {
-        console.log('auch!');
-        Parkour.game.state.start('Game');
-    },
    
     loadLevel: function() {
 
         //parse json file
         this.levelData = JSON.parse(this.game.cache.getText("level"));
 
-         paralax1 = this.game.add.tileSprite(0, 800, 3300,  816, 'clouds');   
-        //paralax2 = this.game.add.tileSprite(0, 400, 3300, 816, 'clouds');
+        paralax1 = this.game.add.tileSprite(0, 800, 3300,  816, 'clouds');   
+        paralax2 = this.game.add.tileSprite(0, 400, 3300, 816, 'backgroundCity');
+
 
         //create group for ground and enable physics body on all elements.
         this.grounds = this.add.group();
@@ -110,6 +130,7 @@ Parkour.GameState = {
         //set grounds properties immovable and no gravity.
         this.grounds.setAll("body.immovable", true);
         this.grounds.setAll("body.allowGravity", false);
+
 
         //make a clouds group and enable physics on all elements.
         this.clouds = this.add.group();
@@ -147,6 +168,8 @@ Parkour.GameState = {
         //make waters group and enable physics on it.
         this.waters = this.add.group();
         this.waters.enableBody = true;
+        this.waters.tint = '#000000';
+
 
         //loop that cycles thru each element and adds each cloud to a x,y location.
         this.levelData.waterData.forEach(function(element){
@@ -164,7 +187,6 @@ Parkour.GameState = {
         this.box = this.add.sprite(10, this.game.height/2 +200, "box");
         this.game.physics.arcade.enable(this.box);
         this.box.body.allowGravity = false;
-        this.game.physics.arcade.enable(this.box);
         this.box.immovable = true;
         this.box.body.moves = false;
 
@@ -173,6 +195,28 @@ Parkour.GameState = {
         this.player.anchor.setTo(0.5);
         this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
         this.player.animations.add("playerJump", [6, 7], 7, true);
+
+        //create hat with throbbing tween
+        this.hat = this.add.sprite(2200, this.game.height/2 - 50, "marioHat");
+        this.hat.anchor.set(0.5);
+        this.game.physics.arcade.enable(this.hat);
+        this.hat.body.allowGravity = false;
+        this.hat.body.immovable = true;
+
+        //tween(target).to(properties, ease, autoStart, delay, repeat)
+        var hatTween = this.game.add.tween(this.hat).to({
+            width:100,
+            height:60  
+        }, 1500, "Linear", true, 0, -1);
+        //yoyo method gives yoyo effect plays forward then reverses if set to true.
+        //if yoyo method is set to false it will repeat without reversing.
+        hatTween.yoyo(true);
+
+        this.pipeWarp = this.add.sprite(2000, this.game.height/2 +100, "pipeWarp");
+        this.game.physics.arcade.enable(this.pipeWarp);
+        this.pipeWarp.body.allowGravity = false;
+        this.pipeWarp.body.immovable = true;
+        this.pipeWarp.body.moves = false;
 
 
         // 0 is the first frame in the array, then 1,2,1, 6 refers to the fps, true means forever
