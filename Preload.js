@@ -13,14 +13,17 @@ var Parkour = Parkour || {};
 		//this.load.image("player", "assets/sprites/parkourKid.png");
 		this.load.image("arrowButton", "assets/sprites/arrowButton.png");
 		this.load.image("actionButton", "assets/sprites/actionButton.png");
-	    //this.load.spritesheet('fire', 'assets/sprites/fire_spritesheet.png', 20, 21, 2, 1, 1);      
+	    this.load.spritesheet('fire', 'assets/sprites/fire_spritesheet.png', 20, 21, 2, 1, 1);      
 	    //this.load.image('barrel', 'assets/sprites/barrel.png');    
 	    this.load.image('goal', 'assets/sprites/gorilla3.png');    
 	    this.load.image('platform', 'assets/sprites/platform.png');    
+	    this.load.image('metalPlatform', 'assets/sprites/metalPlatform.png');  
+	    this.load.image('pole', 'assets/sprites/pole.png');      
 	    this.load.image('ground', 'assets/sprites/ground.png');    
 	    this.load.image('cloud', 'assets/sprites/clouds.png');    
 	    this.load.image('clouds', 'assets/sprites/cloudstile.png');    
 	    this.load.image('box', 'assets/sprites/box.png');    
+	    this.load.image('boxTwo', 'assets/sprites/boxTwo.png');    
 	    this.load.image('water', 'assets/sprites/water.png');    
 	    this.load.image('wood', 'assets/sprites/wood.png');    
 	    this.load.image('ladder', 'assets/sprites/ladder.png');
@@ -28,10 +31,11 @@ var Parkour = Parkour || {};
 	  	this.load.image('marioHat', 'assets/sprites/marioHat.png');
 	    this.load.image('pipeWarp', 'assets/sprites/pipeWarp.png');
 	    this.load.image('backgroundCity', 'assets/sprites/backgroundPic.png');
-	    this.load.image('superPKTitle', 'assets/sprites/superPKTitle.png');
+	    this.load.image('superPKTitle', 'assets/sprites/superPKTitleTwo.png');
 	    this.load.image('playButton', 'assets/sprites/playButton.png');
-
-
+	   	//this.load.image('godzilla', 'assets/sprites/godzillaSpriteProto.png');
+	   	this.load.spritesheet('godzilla', 'assets/sprites/godZillaAnimate.png', 534, 932);
+	    this.load.spritesheet('cat', 'assets/sprites/cat.png', 61.9, 47);    
 
 	    this.game.load.audio("coolHipHop", ["assets/sprites/coolHipHop.mp3","assets/sounds/coolHipHop.ogg"]);
 	    this.game.load.audio("jumpPark", ["assets/sprites/jumpPark.mp3","assets/sounds/jumpPark.ogg"]);
