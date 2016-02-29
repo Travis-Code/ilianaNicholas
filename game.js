@@ -1,6 +1,6 @@
 var Parkour = Parkour || {};
 
-Parkour.Enemy = function(game, x, y, key, velocity){
+Parkour.Cats = function(game, x, y, key, velocity){
     Phaser.Sprite.call(this, game, x, y, key);
     this.game = game;
     this.anchor.setTo(0.5);
@@ -16,10 +16,10 @@ Parkour.Enemy = function(game, x, y, key, velocity){
     this.body.velocity.x = velocity;
 };
 
-Parkour.Enemy.prototype = Object.create(Phaser.Sprite.prototype);
-Parkour.Enemy.prototype.constructor = Parkour.Enemy;
+Parkour.Cats.prototype = Object.create(Phaser.Sprite.prototype);
+Parkour.Cats.prototype.constructor = Parkour.Cat;
 
-Parkour.Enemy.prototype.update = function(){
+Parkour.Cats.prototype.update = function(){
 
     var direction;
     if(this.body.velocity.x > 0){
@@ -50,6 +50,12 @@ Parkour.GameState = {
         this.RUNNING_SPEED = 380;
         this.JUMPING_SPEED = 500;
         this.BOUNCING_SPEED = 150;
+        this.catColorOne = [ 0xFFC65D, 0x7BC8A4, 0x4CC3D9, 0x93648D, 0x7c786a, 0x588c73, 0x8c4646, 0x2a5b84, 0x73503c];
+        this.tintCatColor = this.catColorOne[this.game.rnd.between(0,this.catColorOne.length-1)];
+        this.catColorTwo = [ 0x4CC3D9, 0x93648D, 0x7c786a, 0x588c73, 0x8c4646, 0x2a5b84, 0x73503c];
+        this.tintCatColorTwo = this.catColorTwo[this.game.rnd.between(0,this.catColorTwo.length-1)];
+
+
         //gravity
         this.game.physics.arcade.gravity.y = 1000;
 
@@ -101,21 +107,21 @@ Parkour.GameState = {
         this.game.physics.arcade.collide(this.player, this.metalPlatforms);
         this.game.physics.arcade.collide(this.player, this.box);
         this.game.physics.arcade.collide(this.player, this.wood);
-        this.game.physics.arcade.collide(this.player, this.fires);
+        //this.game.physics.arcade.collide(this.player, this.fires);
         this.game.physics.arcade.collide(this.box, this.grounds);
         this.game.physics.arcade.overlap(this.player, this.hat);
-        this.game.physics.arcade.overlap(this.player, this.godzilla);
-        this.game.physics.arcade.overlap(this.pipeWarp, this.godzilla);
-        this.game.physics.arcade.collide(this.fires, this.grounds);
+        /*this.game.physics.arcade.overlap(this.player, this.godzilla);
+        this.game.physics.arcade.overlap(this.pipeWarp, this.godzilla);*/
+        //this.game.physics.arcade.collide(this.fires, this.grounds);
 
-        if (this.playerAlive) {
+        /*if (this.playerAlive) {
             this.game.physics.arcade.overlap(this.player, this.fires, null, function(p, f) {
                 //this.playerAlive = false;
                 this.game.bgMusic.stop();
                 console.log('burned by fire!');
                 //Parkour.game.state.start('Game');
             }, this);
-        }
+        }*/
 
         if (this.playerAlive) {
             this.game.physics.arcade.overlap(this.player, this.waters, null, function(p, w) {
@@ -128,22 +134,14 @@ Parkour.GameState = {
 
         if (this.playerAlive) {
             this.game.physics.arcade.overlap(this.player, this.hat, null, function(p, h) {
-            this.game.bgMusic.stop();
-            var titlePicTween = this.game.add.tween("pipeWarp").to({
-                width:460,
-                height:191
-            }, 500, "Linear", true, 0, -1);
-            //yoyo method gives yoyo effect plays forward then reverses if set to true.
-            //if yoyo method is set to false it will repeat without reversing.
-            titlePicTween.yoyo(true);
+            //this.game.bgMusic.stop();
             console.log('got the hat!');
             this.hat.destroy();
-            this.loadGodzilla();
-            //Parkour.game.state.start('TitleScreen');
+            //this.loadGodzilla();
             }, this);
         }
 
-        if (this.playerAlive) {
+      /*  if (this.playerAlive) {
             this.game.physics.arcade.overlap(this.player, this.godzilla, null, function(p, g) {
                 this.game.bgMusic.stop();
                 console.log('you got eaten by godzilla!');
@@ -152,15 +150,16 @@ Parkour.GameState = {
                 //this.godzilla.destroy();
                 //Parkour.game.state.start('TitleScreen');
             }, this);
-        }
+        }*/
 
         //collision between player and enemies
-        this.game.physics.arcade.collide(this.player, this.enemies, this.hitEnemy, null, this);
+        this.game.physics.arcade.collide(this.player, this.enemies, this.hitCat, null, this);
 
         //player climbing ladder
         this.game.physics.arcade.overlap(this.player, this.ladder, null, function(p, l) {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
         }, this);
+
 
         if (this.cursors.left.isDown || this.player.customParams.isMovingLeft) {
             this.player.body.velocity.x = -this.RUNNING_SPEED;
@@ -188,7 +187,7 @@ Parkour.GameState = {
         }
     },
 
-    loadGodzilla :function(){
+    /*loadGodzilla :function(){
     //create godzilla.
         this.godzilla = this.add.sprite(800, this.game.height / 2 - 120, 'godzilla');
         var yummy = this.godzilla.animations.add("yummy", [0,1], 4, true);
@@ -208,17 +207,17 @@ Parkour.GameState = {
             this.pipeWarp.body.immovable = false;
             this.pipeWarp.destroy();
         },this);
-    },
+    },*/
 
 
-    hitEnemy: function(player, enemy){
-        if(enemy.body.touching.up){
-            enemy.kill();
+    hitCat: function(player, cat){
+        if(cat.body.touching.up){
+            //cat.kill();
             player.body.velocity.y = -this.BOUNCING_SPEED;
         }
         else {
-            enemy.body.velocity.y = -this.BOUNCING_SPEED;
-            enemy.body.velocity.x =+ this.BOUNCING_SPEED;
+            cat.body.velocity.y = -this.BOUNCING_SPEED;
+            cat.body.velocity.x =+ this.BOUNCING_SPEED;
         }
     },
 
@@ -231,7 +230,7 @@ Parkour.GameState = {
         paralax2 = this.game.add.tileSprite(0, 400, 4300, 816, 'backgroundCity');
 
         //create group for fire and enable physics
-        this.fires = this.add.group();
+       /* this.fires = this.add.group();
         this.fires.enableBody = true;
 
         var fire;
@@ -242,7 +241,7 @@ Parkour.GameState = {
         }, this);
 
         this.fires.setAll("body.allowGravity", false);
-        this.fires.setAll("body.immovable", true);
+        this.fires.setAll("body.immovable", true);*/
 
         //create group for ground and enable physics body on all elements.
         this.grounds = this.add.group();
@@ -343,15 +342,18 @@ Parkour.GameState = {
         this.player.animations.add("playerJump", [6, 7], 7, true);
 
         this.enemies = this.add.group();
-        var sampleEnemy = new Parkour.Enemy(this.game, 200, this.game.height /2 +150, "cat", undefined);
-        sampleEnemy.animations.add("catWalk",[0, 1], 4, true);
-        sampleEnemy.play("catWalk");
-        this.enemies.add(sampleEnemy);
+        var sampleCat = new Parkour.Cats(this.game, 600, this.game.height /2 +150, "cat", undefined);
+        sampleCat.animations.add("catWalk",[0, 1], 4, true);
+        sampleCat.play("catWalk");
+        sampleCat.tint =  this.tintCatColor;
+        this.enemies.add(sampleCat);
 
-        var sampleEnemy2 = new Parkour.Enemy(this.game, 400, this.game.height /2 +150, "cat", undefined);
-        sampleEnemy2.animations.add("catWalk", [0,1], 4, true);
-        sampleEnemy2.play("catWalk");
-        this.enemies.add(sampleEnemy2);
+        var sampleCat2 = new Parkour.Cats(this.game, 400, this.game.height /2 +150, "cat", undefined);
+        sampleCat2.animations.add("catWalk", [0,1], 4, true);
+        sampleCat2.play("catWalk");
+        sampleCat2.tint =  this.tintCatColorTwo;
+
+        this.enemies.add(sampleCat2);
 
         //create hat with throbbing tween
         this.hat = this.add.sprite(2200, this.game.height / 2 - 50, "marioHat");
@@ -383,6 +385,8 @@ Parkour.GameState = {
         //create a custom object for the player controls.
         this.player.customParams = {};
         this.player.body.collideWorldBounds = true;
+            this.player.body.bounce.set(1,0);
+
 
         //this.wood = this.add.sprite(10,0,"wood");
 
@@ -404,10 +408,7 @@ Parkour.GameState = {
         this.rightArrow.fixedToCamera = true;
         this.actionButton.fixedToCamera = true;
 
-        this.actionButton.events.onInputUp.add(function() {
-            this.player.customParams.mustJump = false;
-        }, this);
-
+       
         //jump
         this.actionButton.events.onInputDown.add(function() {
             this.player.customParams.mustJump = true;
