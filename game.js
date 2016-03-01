@@ -31,10 +31,11 @@ Parkour.Cats.prototype.update = function(){
         direction = -1;
   }
 
-    if(this.body.x >= 600){
+    if(this.body.x >= 800){
         this.scale.setTo(1,1);
         direction -1;
         this.body.velocity.x *= -1;
+    
     }
     else if(this.body.x <= 90){
         direction = 1;
@@ -84,6 +85,12 @@ Parkour.GameState = {
         var monster2 = new Parkour.Monster();
         console.log(monster1.energy);
         console.log(monster2.energy);*/
+
+
+        this.barrels = this.add.group();
+        this.barrels.enableBody = true;
+        this.createBarrel();
+        this.barrelCreator = this.game.time.events.loop(Phaser.Timer.SECOND * this.barrelFrequency, this.createBarrel, this);
     },
 
     update: function() {
@@ -110,6 +117,15 @@ Parkour.GameState = {
         //this.game.physics.arcade.collide(this.player, this.fires);
         this.game.physics.arcade.collide(this.box, this.grounds);
         this.game.physics.arcade.overlap(this.player, this.hat);
+        this.game.physics.arcade.collide(this.barrels, this.grounds);
+
+
+        this.barrels.forEach(function(element){
+            if(element.x >= 500) {
+                element.kill();
+            }
+        }, this);
+
         /*this.game.physics.arcade.overlap(this.player, this.godzilla);
         this.game.physics.arcade.overlap(this.pipeWarp, this.godzilla);*/
         //this.game.physics.arcade.collide(this.fires, this.grounds);
@@ -226,8 +242,8 @@ Parkour.GameState = {
         //parse json file
         this.levelData = JSON.parse(this.game.cache.getText("level"));
 
-        paralax1 = this.game.add.tileSprite(0, 800, 3300, 816, 'clouds');
-        paralax2 = this.game.add.tileSprite(0, 400, 4300, 816, 'backgroundCity');
+        paralax1 = this.game.add.tileSprite(0, 800, 5300, 816, 'clouds');
+        paralax2 = this.game.add.tileSprite(0, 400, 5300, 816, 'backgroundCity');
 
         //create group for fire and enable physics
        /* this.fires = this.add.group();
@@ -335,12 +351,6 @@ Parkour.GameState = {
         this.box.immovable = true;
         this.box.body.moves = false;
 
-        //create player.
-        this.player = this.add.sprite(40, this.game.height / 2 - 40, 'player', 5);
-        this.player.anchor.setTo(0.5);
-        this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
-        this.player.animations.add("playerJump", [6, 7], 7, true);
-
         this.enemies = this.add.group();
         var sampleCat = new Parkour.Cats(this.game, 600, this.game.height /2 +150, "cat", undefined);
         sampleCat.animations.add("catWalk",[0, 1], 4, true);
@@ -380,18 +390,37 @@ Parkour.GameState = {
         // 0 is the first frame in the array, then 1,2,1, 6 refers to the fps, true means forever
         //this.player.animations.add('playerWalking', [0, 1, 2, 1], 6, true);
 
-        this.game.physics.arcade.enable(this.player);
 
+        //create player.
+        this.player = this.add.sprite(40, this.game.height / 2 - 40, 'player', 5);
+        this.player.anchor.setTo(0.5);
+        this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
+        this.player.animations.add("playerJump", [6, 7], 7, true);
+        this.game.physics.arcade.enable(this.player);
         //create a custom object for the player controls.
         this.player.customParams = {};
         this.player.body.collideWorldBounds = true;
-            this.player.body.bounce.set(1,0);
-
-
-        //this.wood = this.add.sprite(10,0,"wood");
-
+        this.player.body.bounce.set(1,0);
         //follow player with the camera.
         this.game.camera.follow(this.player);
+    },
+
+
+    createBarrel: function (){
+        //get the first dead sprite.
+        var barrel = this.barrels.getFirstExists(false);
+
+        if(!barrel){
+            barrel = this.barrels.create(200, 200 , "barrel");
+        }
+        
+        barrel.body.collideWorldBounds = false;
+        barrel.body.bounce.set(1, 0);
+       
+        //barrel.reset(this.levelData.barrelSpawn.x, this.levelData.barrelSpawn.y);
+        barrel.reset(220, 200);
+        barrel.body.velocity.x = this.levelData.barrelSpeed;
+
     },
 
     createOnscreenControls: function() {
@@ -453,3 +482,7 @@ Parkour.GameState = {
         }, this);
     }
 };
+
+
+
+
