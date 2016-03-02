@@ -13,11 +13,6 @@ Parkour.titleScreenState = {
         var pvelocity = 50;
 
 
-
-    
-
-
-
         var titlePic = this.game.add.image(this.game.width / 2, this.game.height / 2, "superPKTitle");
         titlePic.anchor.set(0.5);
         /*var titlePicTween = this.game.add.tween(titlePic).to({

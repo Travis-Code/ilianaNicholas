@@ -11,12 +11,12 @@ var Parkour = Parkour || {};
 			this.load.setPreloadSprite(this.loadingBar);
 			//load assets
 		//this.load.image("player", "assets/sprites/parkourKid.png");
-		this.load.image("arrowButton", "assets/sprites/arrowButton.png");
-		this.load.image("actionButton", "assets/sprites/actionButton.png");
+		this.load.image("arrowButton", "assets/sprites/glassArrow.png");
+		this.load.image("actionButton", "assets/sprites/whiteButton.png");
 	    this.load.spritesheet('fire', 'assets/sprites/fire_spritesheet.png', 20, 21, 2, 1, 1);      
 	    this.load.image('barrel', 'assets/sprites/barrel.png');    
-	    this.load.image('goal', 'assets/sprites/gorilla3.png');    
-	    this.load.image('platform', 'assets/sprites/platform.png');    
+	    //this.load.image('goal', 'assets/sprites/gorilla3.png');    
+	   // this.load.image('platform', 'assets/sprites/platform.png');    
 	    this.load.image('metalPlatform', 'assets/sprites/metalPlatform.png');  
 	    this.load.image('pole', 'assets/sprites/pole.png');      
 	    this.load.image('ground', 'assets/sprites/ground.png');    
