@@ -30,8 +30,11 @@ Parkour.GameState = {
         this.game.bgMusic = this.game.add.audio("coolHipHop");
         this.game.bgMusic.loopFull(1);
 
+
+
         //load current level method.
         this.loadLevel();
+
         //this.createOnscreenControls();
         this.createOnscreenControls();
 
@@ -43,10 +46,6 @@ Parkour.GameState = {
         console.log(monster2.energy);*/
 
 
-        this.barrels = this.add.group();
-        this.barrels.enableBody = true;
-        this.createBarrel();
-        this.barrelCreator = this.game.time.events.loop(Phaser.Timer.SECOND * this.barrelFrequency, this.createBarrel, this);
     },
 
     update: function() {
@@ -68,22 +67,24 @@ Parkour.GameState = {
         this.game.physics.arcade.collide(this.player, this.pipeWarp);
         this.game.physics.arcade.collide(this.player, this.platforms);
         this.game.physics.arcade.collide(this.player, this.metalPlatforms);
+                this.game.physics.arcade.collide(this.barrels, this.metalPlatforms);
+
         this.game.physics.arcade.collide(this.player, this.box);
         this.game.physics.arcade.collide(this.player, this.wood);
         //this.game.physics.arcade.collide(this.player, this.fires);
         this.game.physics.arcade.collide(this.box, this.grounds);
         this.game.physics.arcade.overlap(this.player, this.hat);
         this.game.physics.arcade.collide(this.barrels, this.grounds);
-
-
+        
+        //{"x": 2804, "y": 400}
         this.barrels.forEach(function(element){
-            if(element.x >= 500) {
+            if(element.x <= 3500) {
                 element.kill();
             }
         }, this);
 
-        /*this.game.physics.arcade.overlap(this.player, this.godzilla);
-        this.game.physics.arcade.overlap(this.pipeWarp, this.godzilla);*/
+        this.game.physics.arcade.overlap(this.player, this.godzilla);
+        this.game.physics.arcade.overlap(this.pipeWarp, this.godzilla);
         //this.game.physics.arcade.collide(this.fires, this.grounds);
 
         /*if (this.playerAlive) {
@@ -109,20 +110,20 @@ Parkour.GameState = {
             //this.game.bgMusic.stop();
             console.log('got the hat!');
             this.hat.destroy();
-            //this.loadGodzilla();
+            this.loadGodzilla();
             }, this);
         }
 
-      /*  if (this.playerAlive) {
+        if (this.playerAlive) {
             this.game.physics.arcade.overlap(this.player, this.godzilla, null, function(p, g) {
                 this.game.bgMusic.stop();
                 console.log('you got eaten by godzilla!');
-                this.godzilla.body.velocity.y = this.levelData.godzillaSpeed;
+                this.godzilla.body.velocity.x = this.levelData.godzillaSpeed + 200;
                 //Parkour.game.state.start('Game');
                 //this.godzilla.destroy();
                 //Parkour.game.state.start('TitleScreen');
             }, this);
-        }*/
+        }
 
         //collision between player and enemies
         this.game.physics.arcade.collide(this.player, this.enemies, this.hitCat, null, this);
@@ -159,9 +160,9 @@ Parkour.GameState = {
         }
     },
 
-    /*loadGodzilla :function(){
+    loadGodzilla :function(){
     //create godzilla.
-        this.godzilla = this.add.sprite(800, this.game.height / 2 - 120, 'godzilla');
+        this.godzilla = this.add.sprite(1000, this.game.height / 2 - 120, 'godzilla');
         var yummy = this.godzilla.animations.add("yummy", [0,1], 4, true);
         this.godzilla.play("yummy");
         this.game.physics.arcade.enable(this.godzilla);
@@ -179,7 +180,7 @@ Parkour.GameState = {
             this.pipeWarp.body.immovable = false;
             this.pipeWarp.destroy();
         },this);
-    },*/
+    },
 
 
     hitCat: function(player, cat){
@@ -214,6 +215,7 @@ Parkour.GameState = {
 
         this.fires.setAll("body.allowGravity", false);
         this.fires.setAll("body.immovable", true);*/
+
 
         //create group for ground and enable physics body on all elements.
         this.grounds = this.add.group();
@@ -311,14 +313,13 @@ Parkour.GameState = {
         var sampleCat = new Parkour.Cats(this.game, 600, this.game.height /2 +150, "cat", undefined);
         sampleCat.animations.add("catWalk",[0, 1], 4, true);
         sampleCat.play("catWalk");
-        sampleCat.tint =  this.tintCatColor;
+        //sampleCat.tint =  this.tintCatColor;
         this.enemies.add(sampleCat);
 
         var sampleCat2 = new Parkour.Cats(this.game, 400, this.game.height /2 +150, "cat", undefined);
-        sampleCat2.animations.add("catWalk", [0,1], 4, true);
+        sampleCat2.animations.add("catWalk", [0, 1], 4, true);
         sampleCat2.play("catWalk");
-        sampleCat2.tint =  this.tintCatColorTwo;
-
+        //sampleCat2.tint =  this.tintCatColorTwo;
         this.enemies.add(sampleCat2);
 
         //create hat with throbbing tween
@@ -359,24 +360,34 @@ Parkour.GameState = {
         this.player.body.bounce.set(1,0);
         //follow player with the camera.
         this.game.camera.follow(this.player);
+
+
+        this.barrels = this.add.group();
+        this.barrels.enableBody = true;
+
+        this.createBarrel();
+        this.barrelCreator = this.game.time.events.loop(Phaser.Timer.SECOND * this.levelData.barrelFrequency, this.createBarrel, this);
     },
 
 
     createBarrel: function (){
         //get the first dead sprite.
-        var barrel = this.barrels.getFirstExists(false);
+        var barrel = this.barrels.getFirstExists(true);
 
         if(!barrel){
-            barrel = this.barrels.create(200, 200 , "barrel");
+            barrel = this.barrels.create(0, 0 , "fire", 0);
         }
-        
-        barrel.body.collideWorldBounds = false;
-        barrel.body.bounce.set(1, 0);
-       
-        //barrel.reset(this.levelData.barrelSpawn.x, this.levelData.barrelSpawn.y);
-        barrel.reset(220, 200);
-        barrel.body.velocity.x = this.levelData.barrelSpeed;
 
+        barrel.animations.add("fire", [0,1,2,3],12, true);
+        barrel.scale.x = -1;
+        barrel.play("fire");
+        barrel.body.collideWorldBounds = true;
+        barrel.body.bounce.set(1, 0);
+
+        //{"x": 5804, "y": 200}
+        //barrel.reset(this.levelData.barrelSpawn.x, this.levelData.barrelSpawn.y);
+        barrel.reset(6004, this.game.height/2 -500);
+        barrel.body.velocity.x = -this.levelData.barrelSpeed;
     },
 
     createOnscreenControls: function() {
