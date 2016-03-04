@@ -52,7 +52,7 @@ Parkour.GameState = {
 
         this.player.body.velocity.x = 0;
 
-        paralax2.x = this.game.camera.x * 0.15;
+        paralax2.x = this.game.camera.x * 0.3;
         paralax2.y = this.game.camera.y * 0.1 + 240;
         paralax1.x = this.game.camera.x * 0.2;
         paralax1.y = this.game.camera.y * 0.2 - 300; //move it down a few pixels to account for the missing pixels when moving with camera
@@ -67,18 +67,19 @@ Parkour.GameState = {
         this.game.physics.arcade.collide(this.player, this.pipeWarp);
         this.game.physics.arcade.collide(this.player, this.platforms);
         this.game.physics.arcade.collide(this.player, this.metalPlatforms);
-                this.game.physics.arcade.collide(this.barrels, this.metalPlatforms);
-
+        this.game.physics.arcade.collide(this.barrels, this.metalPlatforms);
         this.game.physics.arcade.collide(this.player, this.box);
         this.game.physics.arcade.collide(this.player, this.wood);
         //this.game.physics.arcade.collide(this.player, this.fires);
         this.game.physics.arcade.collide(this.box, this.grounds);
         this.game.physics.arcade.overlap(this.player, this.hat);
         this.game.physics.arcade.collide(this.barrels, this.grounds);
+        this.game.physics.arcade.overlap(this.player, this.barrels);
+
         
         //{"x": 2804, "y": 400}
         this.barrels.forEach(function(element){
-            if(element.x <= 3500) {
+            if(element.x <= 2500) {
                 element.kill();
             }
         }, this);
@@ -96,13 +97,15 @@ Parkour.GameState = {
             }, this);
         }*/
 
+        //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
+
         if (this.playerAlive) {
-            this.game.physics.arcade.overlap(this.player, this.waters, null, function(p, w) {
+            this.game.physics.arcade.overlap(this.player, this.waters, function(player, waters){
                 this.playerAlive = false;
                 this.game.bgMusic.stop();
                 console.log('auch!');
                 Parkour.game.state.start('Game');
-            }, this);
+            }, null, this);
         }
 
         if (this.playerAlive) {
@@ -110,7 +113,7 @@ Parkour.GameState = {
             //this.game.bgMusic.stop();
             console.log('got the hat!');
             this.hat.destroy();
-            this.loadGodzilla();
+            //this.loadGodzilla();
             }, this);
         }
 
@@ -127,9 +130,12 @@ Parkour.GameState = {
 
         //collision between player and enemies
         this.game.physics.arcade.collide(this.player, this.enemies, this.hitCat, null, this);
+        
+        this.game.physics.arcade.collide(this.player, this.barrels, this.soccerHit, null, this);
+
 
         //player climbing ladder
-        this.game.physics.arcade.overlap(this.player, this.ladder, null, function(p, l) {
+        this.game.physics.arcade.overlap(this.player, this.ladders, null, function(p, l) {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
         }, this);
 
@@ -160,7 +166,7 @@ Parkour.GameState = {
         }
     },
 
-    loadGodzilla :function(){
+   /* loadGodzilla :function(){
     //create godzilla.
         this.godzilla = this.add.sprite(1000, this.game.height / 2 - 120, 'godzilla');
         var yummy = this.godzilla.animations.add("yummy", [0,1], 4, true);
@@ -180,7 +186,7 @@ Parkour.GameState = {
             this.pipeWarp.body.immovable = false;
             this.pipeWarp.destroy();
         },this);
-    },
+    },*/
 
 
     hitCat: function(player, cat){
@@ -189,33 +195,30 @@ Parkour.GameState = {
             player.body.velocity.y = -this.BOUNCING_SPEED;
         }
         else {
-            cat.body.velocity.y = -this.BOUNCING_SPEED;
+            cat.body.velocity.y =- this.BOUNCING_SPEED;
             cat.body.velocity.x =+ this.BOUNCING_SPEED;
         }
     },
 
-    loadLevel: function(){
+
+      soccerHit: function(player, soccer){
+            if(soccer.body.touching.up){
+                //cat.kill();
+
+            }
+            else {
+                soccer.body.velocity.y =- this.BOUNCING_SPEED;
+                soccer.body.velocity.x =+ this.BOUNCING_SPEED;
+
+            }
+        },
+        loadLevel: function(){
 
         //parse json file
         this.levelData = JSON.parse(this.game.cache.getText("level"));
 
-        paralax1 = this.game.add.tileSprite(0, 800, 5300, 816, 'clouds');
-        paralax2 = this.game.add.tileSprite(0, 400, 5300, 816, 'backgroundCity');
-
-        //create group for fire and enable physics
-       /* this.fires = this.add.group();
-        this.fires.enableBody = true;
-
-        var fire;
-        this.levelData.fireData.forEach(function(element){
-            fire = this.fires.create(element.x, element.y, "fire");
-            fire.animations.add("fire",[0, 1], 4, true);
-            fire.play("fire");
-        }, this);
-
-        this.fires.setAll("body.allowGravity", false);
-        this.fires.setAll("body.immovable", true);*/
-
+        paralax1 = this.game.add.tileSprite(0, 800, 6300, 816, 'clouds');
+        paralax2 = this.game.add.tileSprite(0, 400, 6300, 816, 'backgroundCity');
 
         //create group for ground and enable physics body on all elements.
         this.grounds = this.add.group();
@@ -243,12 +246,38 @@ Parkour.GameState = {
         this.clouds.setAll("body.immovable", true);
         this.clouds.setAll("body.allowGravity", false);
 
+
+
+
+
+        //create group for ground and enable physics body on all elements.
+        this.ladders = this.add.group();
+        this.ladders.enableBody = true;
+
+        //loop that cycles thru each element and adds each ground to a x,y location.
+        this.levelData.ladderData.forEach(function(element){
+            this.ladders.create(element.x, element.y, "ladder");
+        }, this);
+
+        //set grounds properties immovable and no gravity.
+        this.ladders.setAll("body.immovable", true);
+        this.ladders.setAll("body.allowGravity", false);
+
         //add ladder
-        this.ladder = this.add.sprite(1300, this.game.height / 2 + 100, "ladder");
+        /*this.ladder = this.add.sprite(1300, this.game.height / 2 + 100, "ladder");
         this.ladder.anchor.setTo(0.5);
         this.game.physics.arcade.enable(this.ladder);
         this.ladder.body.allowGravity = false;
         this.ladder.body.immovable = true;
+
+
+        this.ladder2 = this.add.sprite(5246, this.game.height / 2 + 100, "ladder");
+        this.ladder2.anchor.setTo(0.5);
+        this.game.physics.arcade.enable(this.ladder2);
+        this.ladder2.body.allowGravity = false;
+        this.ladder2.body.immovable = true;*/
+
+
 
         this.metalPlatforms = this.add.group();
         this.metalPlatforms.enableBody = true;
@@ -284,20 +313,6 @@ Parkour.GameState = {
         //set wood properties and no gravity.
         this.wood.setAll("body.immovable", false);
         this.wood.setAll("body.allowGravity", false);
-
-        //make waters group and enable physics on it.
-        this.waters = this.add.group();
-        this.waters.enableBody = true;
-        this.waters.tint = '#000000';
-
-        //loop that cycles thru each element and adds each cloud to a x,y location.
-        this.levelData.waterData.forEach(function(element) {
-            this.waters.create(element.x, this.game.height / 2 + element.y, "water");
-        }, this);
-
-        //set water properties and no gravity.
-        this.waters.setAll("body.immovable", true);
-        this.waters.setAll("body.allowGravity", false);
 
         //add danger sign to the game.
         this.danger = this.add.sprite(1600, this.game.height / 2 - 120, "danger");
@@ -344,12 +359,22 @@ Parkour.GameState = {
         this.pipeWarp.body.immovable = true;
         this.pipeWarp.body.moves = false;
 
+
+        this.pipeWarp2 = this.add.sprite(6244, this.game.height -400, "pipeWarp");
+        this.game.physics.arcade.enable(this.pipeWarp2);
+        this.pipeWarp2.anchor.setTo(0.5);
+        this.pipeWarp2.angle = 230;
+        this.pipeWarp2.body.allowGravity = false;
+        this.pipeWarp2.body.immovable = true;
+        this.pipeWarp2.body.moves = false;
+
+        //6004
         // 0 is the first frame in the array, then 1,2,1, 6 refers to the fps, true means forever
         //this.player.animations.add('playerWalking', [0, 1, 2, 1], 6, true);
 
 
         //create player.
-        this.player = this.add.sprite(40, this.game.height / 2 - 40, 'player', 5);
+        this.player = this.add.sprite(5040, this.game.height / 2 - 40, 'player', 5);
         this.player.anchor.setTo(0.5);
         this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
         this.player.animations.add("playerJump", [6, 7], 7, true);
@@ -367,6 +392,20 @@ Parkour.GameState = {
 
         this.createBarrel();
         this.barrelCreator = this.game.time.events.loop(Phaser.Timer.SECOND * this.levelData.barrelFrequency, this.createBarrel, this);
+
+        //make waters group and enable physics on it.
+        this.waters = this.add.group();
+        this.waters.enableBody = true;
+        this.waters.tint = '#000000';
+
+        //loop that cycles thru each element and adds each cloud to a x,y location.
+        this.levelData.waterData.forEach(function(element) {
+            this.waters.create(element.x, this.game.height / 2 + element.y, "water");
+        }, this);
+
+        //set water properties and no gravity.
+        this.waters.setAll("body.immovable", true);
+        this.waters.setAll("body.allowGravity", false);
     },
 
 
@@ -386,9 +425,11 @@ Parkour.GameState = {
 
         //{"x": 5804, "y": 200}
         //barrel.reset(this.levelData.barrelSpawn.x, this.levelData.barrelSpawn.y);
-        barrel.reset(6004, this.game.height/2 -500);
+        barrel.reset(6154, this.game.height/2 - 80);
         barrel.body.velocity.x = -this.levelData.barrelSpeed;
     },
+    //6004
+    //150
 
     createOnscreenControls: function() {
         this.leftArrow = this.add.button(80, this.game.height - 80, 'arrowButton');
