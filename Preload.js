@@ -49,8 +49,7 @@ Parkour.PreloadState = {
         this.load.spritesheet('trampoline', 'assets/sprites/trampolineFixed.png',220, 112);
         this.load.spritesheet('fire', 'assets/sprites/soccerBall.png', 45, 45);
 
-
-
+        this.game.load.audio("boing", ["assets/sprites/boing.mp3", "assets/sounds/boing.ogg"]);
         this.game.load.audio("coolHipHop", ["assets/sprites/coolHipHop.mp3", "assets/sounds/coolHipHop.ogg"]);
         this.game.load.audio("jumpPark", ["assets/sprites/jumpPark.mp3", "assets/sounds/jumpPark.ogg"]);
         this.game.load.audio("squeekSound", ["assets/sprites/squeekSound.mp3", "assets/sounds/squeekSound.ogg"]);

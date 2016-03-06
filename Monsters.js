@@ -1,10 +1,13 @@
 var Parkour = Parkour || {};
 
-Parkour.Monsters = function(game, x, y, key, velocity){
+Parkour.Monsters = function(game, x, y, key, velocity, monsterX, monsterX2){
     Phaser.Sprite.call(this, game, x, y, key);
     
     this.game = game;
     this.anchor.setTo(0.5);
+
+    this.monsterX = monsterX;
+    this.monsterX2 = monsterX2;
 
     //give a random speed if none given.
     if(velocity === undefined){
@@ -32,13 +35,14 @@ Parkour.Monsters.prototype.update = function(){
         this.scale.setTo(1, 1);
         direction = -1;
   }
-
-    if(this.body.x >= 800){
+                   // 800
+    if(this.body.x >= this.monsterX){
         this.scale.setTo(1,1);
         direction -1;
         this.body.velocity.x *= -1;
     }
-    else if(this.body.x <= 90){
+                    //90
+    else if(this.body.x <= this.monsterX2){
         direction = 1;
         this.scale.setTo(-1,1);
         this.body.velocity.x = this.body.velocity.x += 2;

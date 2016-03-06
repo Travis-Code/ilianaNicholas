@@ -33,6 +33,7 @@ Parkour.GameState = {
         this.ouch = this.game.add.audio("ouch");
         this.meow = this.game.add.audio("meow");
         this.cheer = this.game.add.audio("cheer");
+        this.boing = this.game.add.audio("boing");
 
 
         //load current level method.
@@ -41,12 +42,6 @@ Parkour.GameState = {
         //this.createOnscreenControls();
         this.createOnscreenControls();
 
-        //test Monster class method.
-        //test monster class.
-        /*var monster1 = new Parkour.Monster();
-        var monster2 = new Parkour.Monster();
-        console.log(monster1.energy);
-        console.log(monster2.energy);*/
 
 
     },
@@ -140,25 +135,17 @@ Parkour.GameState = {
         this.game.physics.arcade.collide(this.player, this.jumpingFishes, this.hitFish, null, this);
         this.game.physics.arcade.collide(this.player, this.soccerBalls, this.soccerHit, null, this);
         this.game.physics.arcade.collide(this.player, this.monsters, this.hitMonster, null, this);
+        this.game.physics.arcade.collide(this.player, this.trampolineGroup, this.hitTramp, null, this);
+       // this.game.physics.arcade.collide(this.player, this.trampoline2, this.hitTramp, null, this);
+        //this.game.physics.arcade.collide(this.player, this.trampoline3, this.hitTramp, null, this);
+
 
         //player climbing ladder
         this.game.physics.arcade.overlap(this.player, this.ladders, null, function(p, l) {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
         }, this);
 
-        //trampoline collision
-        this.game.physics.arcade.overlap(this.player, this.trampoline, null, function(p, t) {
-        this.trampoline.animations.add("trampolineSpring", [0,1,2,3], 4, true);
-        this.trampoline.play("trampolineSpring");
-        this.game.time.events.add(Phaser.Timer.SECOND * 4, this.stopTramp, this);
-        this.player.body.velocity.y = -this.JUMPING_SPEED*2;
-        var jumpTramp = this.game.add.tween(this.player).to({
-                //x: this.player.x + this.game.rnd.between(100, 200),
-                //y: this.player.y + this.game.rnd.between(-500, 800),
-                rotation: 6.3
-            }, 1000, Phaser.Easing.Linear.None, true);
-
-        }, this);
+       
 
         if (this.cursors.left.isDown || this.player.customParams.isMovingLeft) {
             this.player.body.velocity.x = -this.RUNNING_SPEED;
@@ -209,6 +196,26 @@ Parkour.GameState = {
      },*/
 
  
+     hitTramp:function(player, trampoline){
+         if (trampoline.body.touching.up) {
+
+            trampoline.animations.add("trampolineSpring", [0,1,2,3], 4, true);
+            trampoline.play("trampolineSpring");
+            
+            this.boing.play();
+            this.game.time.events.add(Phaser.Timer.SECOND * 4, function(){
+                trampoline.animations.stop();
+                trampoline.frame=0;
+            }, this);
+            this.player.body.velocity.y = -this.JUMPING_SPEED*2;
+            var jumpTramp = this.game.add.tween(this.player).to({
+                    //x: this.player.x + this.game.rnd.between(100, 200),
+                    //y: this.player.y + this.game.rnd.between(-500, 800),
+                    rotation: 6.3
+                }, 1000, Phaser.Easing.Linear.None, true);
+        }
+
+     },
 
     hitMonster: function(player, monster) {
         if (monster.body.touching.up) {
@@ -223,7 +230,6 @@ Parkour.GameState = {
         }
     },
 
-
     hitFish: function(player, fish) {
         if (fish.body.touching.up) {
             fish.kill();
@@ -235,22 +241,19 @@ Parkour.GameState = {
             this.ouch.play();
             this.game.bgMusic.stop();
             Parkour.game.state.start('Game');
-
         }
     },
 
     hitCat: function(player, cat) {
         if (cat.body.touching.up) {
             //cat.kill();
-                        this.squeek.play();
-
+            this.squeek.play();
             player.body.velocity.y = -this.BOUNCING_SPEED;
 
         } else {
             cat.body.velocity.y = -this.BOUNCING_SPEED;
             cat.body.velocity.x = +this.BOUNCING_SPEED;
             this.meow.play();
-
         }
     },
 
@@ -298,9 +301,6 @@ Parkour.GameState = {
         this.clouds.setAll("body.immovable", true);
         this.clouds.setAll("body.allowGravity", false);
 
-
-
-
         //create group for ground and enable physics body on all elements.
         this.ladders = this.add.group();
         this.ladders.enableBody = true;
@@ -313,22 +313,6 @@ Parkour.GameState = {
         //set grounds properties immovable and no gravity.
         this.ladders.setAll("body.immovable", true);
         this.ladders.setAll("body.allowGravity", false);
-
-        //add ladder
-        /*this.ladder = this.add.sprite(1300, this.game.height / 2 + 100, "ladder");
-        this.ladder.anchor.setTo(0.5);
-        this.game.physics.arcade.enable(this.ladder);
-        this.ladder.body.allowGravity = false;
-        this.ladder.body.immovable = true;
-
-
-        this.ladder2 = this.add.sprite(5246, this.game.height / 2 + 100, "ladder");
-        this.ladder2.anchor.setTo(0.5);
-        this.game.physics.arcade.enable(this.ladder2);
-        this.ladder2.body.allowGravity = false;
-        this.ladder2.body.immovable = true;*/
-
-
 
         this.metalPlatforms = this.add.group();
         this.metalPlatforms.enableBody = true;
@@ -362,7 +346,7 @@ Parkour.GameState = {
         }, this);
 
         //set wood properties and no gravity.
-        this.wood.setAll("body.immovable", false);
+        this.wood.setAll("body.immovable", true);
         this.wood.setAll("body.allowGravity", false);
 
         //add danger sign to the game.
@@ -402,37 +386,52 @@ Parkour.GameState = {
         this.jumpingFishes.add(sampleFish2);
         this.jumpingFishes.scale.setTo(0.5);   
 
-        //add friendly cats.
-        this.friendlyCats = this.add.group();
-        var sampleCat = new Parkour.Cats(this.game, 600, this.game.height / 2 + 150, "cat", undefined);
-        sampleCat.animations.add("catWalk", [0, 1], 4, true);
-        sampleCat.play("catWalk");
-        //sampleCat.tint =  this.tintCatColor;
-        this.friendlyCats.add(sampleCat);
-        //add sampleCat2
-        var sampleCat2 = new Parkour.Cats(this.game, 400, this.game.height / 2 + 150, "cat", undefined);
-        sampleCat2.animations.add("catWalk", [0, 1], 4, true);
-        sampleCat2.play("catWalk");
-        //sampleCat2.tint =  this.tintCatColorTwo;
-        this.friendlyCats.add(sampleCat2);
+        this.trampolineGroup = this.add.group();
+        this.trampolineGroup.enableBody = true;
+
+        this.levelData.trampolineData.forEach(function(element) {
+            this.trampolineGroup.create(element.x, element.y, "trampoline");
+        }, this);
+
+        this.trampolineGroup.setAll("body.immovable", true);
+        this.trampolineGroup.setAll("body.allowGravity", true);
+        this.trampolineGroup.setAll("body.moves", false);
+
 
         //add monsters.
         this.monsters = this.add.group();
-        var monster = new Parkour.Monsters(this.game, 700, this.game.height / 2, "smallMonster", undefined);
+        var monster = new Parkour.Monsters(this.game, 700, this.game.height / 2, "smallMonster", undefined, 800, 90);
         monster.animations.add("monsterWalk", [0, 1,2,3,4,5,6], 10, true);
         monster.play("monsterWalk");
         //sampleCat.tint =  this.tintCatColor;
         this.monsters.add(monster);
         //this.monsters.scale.setTo(0.3);
-
-        //create trampoline.
-        this.trampoline = this.add.sprite(1000, 420, "trampoline", 0);
-        this.game.physics.arcade.enable(this.trampoline);
-        this.trampoline.body.allowGravity = true;
-        this.trampoline.immovable = true;
-        this.trampoline.body.moves = false;
-
+        var monster = new Parkour.Monsters(this.game, 900, this.game.height / 2, "smallMonster", undefined, 1000, 600);
+        monster.animations.add("monsterWalk", [0, 1,2,3,4,5,6], 10, true);
+        monster.play("monsterWalk");
+        //sampleCat.tint =  this.tintCatColor;
+        this.monsters.add(monster);
+        //this.monsters.scale.setTo(0.3);
+        var monster = new Parkour.Monsters(this.game, 6500, this.game.height / 2, "monster", undefined, 7000, 6000);
+        monster.animations.add("monsterWalk", [0, 1,2,3,4,5,6], 10, true);
+        monster.play("monsterWalk");
+        //sampleCat.tint =  this.tintCatColor;
+        this.monsters.add(monster);
+        //this.monsters.scale.setTo(0.3);
        
+        //add friendly cats.
+        this.friendlyCats = this.add.group();
+        var sampleCat = new Parkour.Cats(this.game, 6500, this.game.height / 2 + 150, "cat", undefined);
+        sampleCat.animations.add("catWalk", [0, 1], 4, true);
+        sampleCat.play("catWalk");
+        //sampleCat.tint =  this.tintCatColor;
+        this.friendlyCats.add(sampleCat);
+        //add sampleCat2
+        var sampleCat2 = new Parkour.Cats(this.game, 6400, this.game.height / 2 + 150, "cat", undefined);
+        sampleCat2.animations.add("catWalk", [0, 1], 4, true);
+        sampleCat2.play("catWalk");
+        //sampleCat2.tint =  this.tintCatColorTwo;
+        this.friendlyCats.add(sampleCat2);
 
         //create hat with throbbing tween
         this.hat = this.add.sprite(2200, this.game.height / 2 - 50, "marioHat");
@@ -469,7 +468,7 @@ Parkour.GameState = {
         //this.player.animations.add('playerWalking', [0, 1, 2, 1], 6, true);
 
         //create player.
-        this.player = this.add.sprite(40, 300, 'player', 5);
+        this.player = this.add.sprite(4000, 300, 'player', 5);
         this.player.anchor.setTo(0.5);
         this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
         this.player.animations.add("playerJump", [6, 7], 7, true);
@@ -480,7 +479,6 @@ Parkour.GameState = {
         this.player.body.bounce.set(1, 0);
         //follow player with the camera.
         this.game.camera.follow(this.player);
-
 
         this.soccerBalls = this.add.group();
         this.soccerBalls.enableBody = true;
@@ -501,10 +499,6 @@ Parkour.GameState = {
         //set water properties and no gravity.
         this.waters.setAll("body.immovable", true);
         this.waters.setAll("body.allowGravity", false);
-    },
-
-    stopTramp: function(){
-        this.trampoline.animations.stop();
     },
 
     createSoccerBall: function() {

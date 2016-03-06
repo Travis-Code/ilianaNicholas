@@ -31,12 +31,12 @@ Parkour.Cats.prototype.update = function(){
         direction = -1;
   }
 
-    if(this.body.x >= 800){
+    if(this.body.x >= 7500){
         this.scale.setTo(1,1);
         direction -1;
         this.body.velocity.x *= -1;
     }
-    else if(this.body.x <= 90){
+    else if(this.body.x <= 6000){
         direction = 1;
         this.scale.setTo(-1,1);
         this.body.velocity.x = this.body.velocity.x += 2;
