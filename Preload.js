@@ -17,7 +17,6 @@ Parkour.PreloadState = {
         this.load.image("actionButton", "assets/sprites/whiteButton.png");
         //this.load.spritesheet('fire', 'assets/sprites/fire_spritesheet.png', 20, 21, 2, 1, 1);
         //this.load.spritesheet('fire', 'assets/sprites/fireSprite.png', 169, 112);      
-        this.load.spritesheet('fire', 'assets/sprites/soccerBall.png', 45, 45);
         //this.load.spritesheet('fire', 'assets/sprites/fireSpriteSmaller.png', 41, 35);      
         //this.load.image('barrel', 'assets/sprites/barrel.png');
         this.load.image('pufferFish', 'assets/sprites/pufferFish.png');
@@ -40,11 +39,25 @@ Parkour.PreloadState = {
         this.load.image('backgroundCity', 'assets/sprites/backgroundPic.png');
         this.load.image('superPKTitle', 'assets/sprites/superPKTitleTwo.png');
         this.load.image('playButton', 'assets/sprites/playButton.png');
+
         //this.load.image('godzilla', 'assets/sprites/godzillaSpriteProto.png');
         this.load.spritesheet('godzilla', 'assets/sprites/godZillaAnimate.png', 534, 932);
         this.load.spritesheet('cat', 'assets/sprites/cat.png', 61.9, 47);
+        this.load.spritesheet('monster', 'assets/sprites/monster.png', 389.7 ,408 );
+        this.load.spritesheet('smallMonster', 'assets/sprites/smallMonster.png', 76.5 ,80 );
+
+        this.load.spritesheet('trampoline', 'assets/sprites/trampolineFixed.png',220, 112);
+        this.load.spritesheet('fire', 'assets/sprites/soccerBall.png', 45, 45);
+
+
+
         this.game.load.audio("coolHipHop", ["assets/sprites/coolHipHop.mp3", "assets/sounds/coolHipHop.ogg"]);
         this.game.load.audio("jumpPark", ["assets/sprites/jumpPark.mp3", "assets/sounds/jumpPark.ogg"]);
+        this.game.load.audio("squeekSound", ["assets/sprites/squeekSound.mp3", "assets/sounds/squeekSound.ogg"]);
+        this.game.load.audio("ouch", ["assets/sprites/ouch.mp3", "assets/sounds/ouch.ogg"]);
+        this.game.load.audio("meow", ["assets/sprites/meow.mp3", "assets/sounds/meow.ogg"]);
+        this.game.load.audio("cheer", ["assets/sprites/cheer.mp3", "assets/sounds/cheer.ogg"]);
+
         //spritesheet ("key", "path", xframeSize, yframeSize, num of frames in sheet.)    
         //this.load.spritesheet("player", "assets/sprites/playerIdle.png",60,84);
         this.load.spritesheet("player", "assets/sprites/playerRunJump.png", 52, 86);
