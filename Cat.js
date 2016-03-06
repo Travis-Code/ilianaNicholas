@@ -10,7 +10,6 @@ Parkour.Cats = function(game, x, y, key, velocity){
     if(velocity === undefined){
         velocity = (40+Math.random()*20) * (Math.random()<0.5 ? 1:-1);
     }
-
     //enable physics
     this.game.physics.arcade.enableBody(this);
     this.body.collideWorldBounds = true;
@@ -20,7 +19,6 @@ Parkour.Cats = function(game, x, y, key, velocity){
 
 Parkour.Cats.prototype = Object.create(Phaser.Sprite.prototype);
 Parkour.Cats.prototype.constructor = Parkour.Cat;
-
 Parkour.Cats.prototype.update = function(){
 
     var direction;
@@ -37,13 +35,10 @@ Parkour.Cats.prototype.update = function(){
         this.scale.setTo(1,1);
         direction -1;
         this.body.velocity.x *= -1;
-    
     }
     else if(this.body.x <= 90){
         direction = 1;
         this.scale.setTo(-1,1);
         this.body.velocity.x = this.body.velocity.x += 2;
     }
-
-
 };

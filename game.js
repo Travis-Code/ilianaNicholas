@@ -7,10 +7,10 @@ Parkour.GameState = {
         this.RUNNING_SPEED = 380;
         this.JUMPING_SPEED = 500;
         this.BOUNCING_SPEED = 150;
-        this.catColorOne = [ 0xFFC65D, 0x7BC8A4, 0x4CC3D9, 0x93648D, 0x7c786a, 0x588c73, 0x8c4646, 0x2a5b84, 0x73503c];
-        this.tintCatColor = this.catColorOne[this.game.rnd.between(0,this.catColorOne.length-1)];
-        this.catColorTwo = [ 0x4CC3D9, 0x93648D, 0x7c786a, 0x588c73, 0x8c4646, 0x2a5b84, 0x73503c];
-        this.tintCatColorTwo = this.catColorTwo[this.game.rnd.between(0,this.catColorTwo.length-1)];
+        this.catColorOne = [0xFFC65D, 0x7BC8A4, 0x4CC3D9, 0x93648D, 0x7c786a, 0x588c73, 0x8c4646, 0x2a5b84, 0x73503c];
+        this.tintCatColor = this.catColorOne[this.game.rnd.between(0, this.catColorOne.length - 1)];
+        this.catColorTwo = [0x4CC3D9, 0x93648D, 0x7c786a, 0x588c73, 0x8c4646, 0x2a5b84, 0x73503c];
+        this.tintCatColorTwo = this.catColorTwo[this.game.rnd.between(0, this.catColorTwo.length - 1)];
 
 
         //gravity
@@ -62,24 +62,24 @@ Parkour.GameState = {
         this.game.physics.arcade.collide(this.player, this.boxy);
         this.game.physics.arcade.collide(this.boxy, this.grounds);
         this.game.physics.arcade.collide(this.boxy, this.boxy);
-        this.game.physics.arcade.collide(this.enemies, this.grounds);
+        this.game.physics.arcade.collide(this.friendlyCats, this.grounds);
         //this.game.physics.arcade.collide(this.waters, this.boxy);
         this.game.physics.arcade.collide(this.player, this.pipeWarp);
         this.game.physics.arcade.collide(this.player, this.platforms);
         this.game.physics.arcade.collide(this.player, this.metalPlatforms);
-        this.game.physics.arcade.collide(this.barrels, this.metalPlatforms);
+        this.game.physics.arcade.collide(this.soccerBalls, this.metalPlatforms);
         this.game.physics.arcade.collide(this.player, this.box);
         this.game.physics.arcade.collide(this.player, this.wood);
         //this.game.physics.arcade.collide(this.player, this.fires);
         this.game.physics.arcade.collide(this.box, this.grounds);
         this.game.physics.arcade.overlap(this.player, this.hat);
-        this.game.physics.arcade.collide(this.barrels, this.grounds);
-        this.game.physics.arcade.overlap(this.player, this.barrels);
+        this.game.physics.arcade.collide(this.soccerBalls, this.grounds);
+        this.game.physics.arcade.overlap(this.player, this.soccerBalls);
 
-        
+
         //{"x": 2804, "y": 400}
-        this.barrels.forEach(function(element){
-            if(element.x <= 2500) {
+        this.soccerBalls.forEach(function(element) {
+            if (element.x <= 2500) {
                 element.kill();
             }
         }, this);
@@ -100,7 +100,7 @@ Parkour.GameState = {
         //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
 
         if (this.playerAlive) {
-            this.game.physics.arcade.overlap(this.player, this.waters, function(player, waters){
+            this.game.physics.arcade.overlap(this.player, this.waters, function(player, waters) {
                 this.playerAlive = false;
                 this.game.bgMusic.stop();
                 console.log('auch!');
@@ -110,10 +110,10 @@ Parkour.GameState = {
 
         if (this.playerAlive) {
             this.game.physics.arcade.overlap(this.player, this.hat, null, function(p, h) {
-            //this.game.bgMusic.stop();
-            console.log('got the hat!');
-            this.hat.destroy();
-            //this.loadGodzilla();
+                //this.game.bgMusic.stop();
+                console.log('got the hat!');
+                this.hat.destroy();
+                //this.loadGodzilla();
             }, this);
         }
 
@@ -128,17 +128,15 @@ Parkour.GameState = {
             }, this);
         }
 
-        //collision between player and enemies
-        this.game.physics.arcade.collide(this.player, this.enemies, this.hitCat, null, this);
-        
-        this.game.physics.arcade.collide(this.player, this.barrels, this.soccerHit, null, this);
-
+        //collision between player and friendlyCats
+        this.game.physics.arcade.collide(this.player, this.friendlyCats, this.hitCat, null, this);
+        this.game.physics.arcade.collide(this.player, this.jumpingFishes, this.hitFish, null, this);
+        this.game.physics.arcade.collide(this.player, this.soccerBalls, this.soccerHit, null, this);
 
         //player climbing ladder
         this.game.physics.arcade.overlap(this.player, this.ladders, null, function(p, l) {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
         }, this);
-
 
         if (this.cursors.left.isDown || this.player.customParams.isMovingLeft) {
             this.player.body.velocity.x = -this.RUNNING_SPEED;
@@ -166,53 +164,61 @@ Parkour.GameState = {
         }
     },
 
-   /* loadGodzilla :function(){
-    //create godzilla.
-        this.godzilla = this.add.sprite(1000, this.game.height / 2 - 120, 'godzilla');
-        var yummy = this.godzilla.animations.add("yummy", [0,1], 4, true);
-        this.godzilla.play("yummy");
-        this.game.physics.arcade.enable(this.godzilla);
-        this.godzilla.body.velocity.x = this.levelData.godzillaSpeed;
-        this.godzilla.immovable = true;
-        //this.godzilla.body.moves = false;
-        this.godzilla.body.allowGravity = false;
-        console.log("GODZILLA IS COMING!");
-        if(this.godzilla.body.y > this.game.height){
-            this.godzilla.destroy();
-            console.log("godzilla is dead");
-        } 
+    /* loadGodzilla :function(){
+     //create godzilla.
+         this.godzilla = this.add.sprite(1000, this.game.height / 2 - 120, 'godzilla');
+         var yummy = this.godzilla.animations.add("yummy", [0,1], 4, true);
+         this.godzilla.play("yummy");
+         this.game.physics.arcade.enable(this.godzilla);
+         this.godzilla.body.velocity.x = this.levelData.godzillaSpeed;
+         this.godzilla.immovable = true;
+         //this.godzilla.body.moves = false;
+         this.godzilla.body.allowGravity = false;
+         console.log("GODZILLA IS COMING!");
+         if(this.godzilla.body.y > this.game.height){
+             this.godzilla.destroy();
+             console.log("godzilla is dead");
+         } 
 
-         this.game.physics.arcade.overlap(this.godzilla, this.pipeWarp, null, function(g, p) {
-            this.pipeWarp.body.immovable = false;
-            this.pipeWarp.destroy();
-        },this);
-    },*/
+          this.game.physics.arcade.overlap(this.godzilla, this.pipeWarp, null, function(g, p) {
+             this.pipeWarp.body.immovable = false;
+             this.pipeWarp.destroy();
+         },this);
+     },*/
 
+    hitFish: function(player, fish) {
+        if (fish.body.touching.up) {
+            fish.kill();
+            this.player.body.velocity.y = -this.JUMPING_SPEED;
+        } else {
+            fish.body.velocity.y = -this.BOUNCING_SPEED;
+            fish.body.velocity.x = +this.BOUNCING_SPEED;
+            Parkour.game.state.start('Game');
 
-    hitCat: function(player, cat){
-        if(cat.body.touching.up){
-            //cat.kill();
-            player.body.velocity.y = -this.BOUNCING_SPEED;
-        }
-        else {
-            cat.body.velocity.y =- this.BOUNCING_SPEED;
-            cat.body.velocity.x =+ this.BOUNCING_SPEED;
         }
     },
 
+    hitCat: function(player, cat) {
+        if (cat.body.touching.up) {
+            //cat.kill();
+            player.body.velocity.y = -this.BOUNCING_SPEED;
+        } else {
+            cat.body.velocity.y = -this.BOUNCING_SPEED;
+            cat.body.velocity.x = +this.BOUNCING_SPEED;
+        }
+    },
 
-      soccerHit: function(player, soccer){
-            if(soccer.body.touching.up){
-                //cat.kill();
+    soccerHit: function(player, soccer) {
+        if (soccer.body.touching.up) {
+            //cat.kill();
 
-            }
-            else {
-                soccer.body.velocity.y =- this.BOUNCING_SPEED;
-                soccer.body.velocity.x =+ this.BOUNCING_SPEED;
+        } else {
+            soccer.body.velocity.y = -this.BOUNCING_SPEED;
+            soccer.body.velocity.x = +this.BOUNCING_SPEED;
 
-            }
-        },
-        loadLevel: function(){
+        }
+    },
+    loadLevel: function() {
 
         //parse json file
         this.levelData = JSON.parse(this.game.cache.getText("level"));
@@ -249,13 +255,12 @@ Parkour.GameState = {
 
 
 
-
         //create group for ground and enable physics body on all elements.
         this.ladders = this.add.group();
         this.ladders.enableBody = true;
 
         //loop that cycles thru each element and adds each ground to a x,y location.
-        this.levelData.ladderData.forEach(function(element){
+        this.levelData.ladderData.forEach(function(element) {
             this.ladders.create(element.x, element.y, "ladder");
         }, this);
 
@@ -282,10 +287,10 @@ Parkour.GameState = {
         this.metalPlatforms = this.add.group();
         this.metalPlatforms.enableBody = true;
 
-        this.levelData.metalPlatformData.forEach(function(element){
+        this.levelData.metalPlatformData.forEach(function(element) {
             this.metalPlatforms.create(element.x, element.y, "metalPlatform");
-        },this);
-        
+        }, this);
+
         this.metalPlatforms.setAll("body.immovable", true);
         this.metalPlatforms.setAll("body.allowGravity", false);
 
@@ -294,9 +299,9 @@ Parkour.GameState = {
         this.boxy.enableBody = true;
 
         //loop that cycles thru each element and adds a box to a x,y location.
-        this.levelData.boxData.forEach(function(element){
-            this.boxy.create(element.x, this.game.height/2 + element.y, "boxTwo");
-        },this);
+        this.levelData.boxData.forEach(function(element) {
+            this.boxy.create(element.x, this.game.height / 2 + element.y, "boxTwo");
+        }, this);
 
         this.boxy.setAll("body.immovable", false);
         this.boxy.setAll("body.allowGravity", true);
@@ -324,18 +329,43 @@ Parkour.GameState = {
         this.box.immovable = true;
         this.box.body.moves = false;
 
-        this.enemies = this.add.group();
-        var sampleCat = new Parkour.Cats(this.game, 600, this.game.height /2 +150, "cat", undefined);
-        sampleCat.animations.add("catWalk",[0, 1], 4, true);
+
+         //add fish1a
+        this.jumpingFishes = this.add.group();
+        var sampleFisha = new Parkour.Fish(this.game, 20, 400, "pufferFish", undefined);
+        this.jumpingFishes.add(sampleFisha);
+        this.jumpingFishes.scale.setTo(0.7);
+        //add fish1
+        var sampleFish = new Parkour.Fish(this.game, 3050, 400, "pufferFish", undefined);
+        this.jumpingFishes.add(sampleFish);
+        this.jumpingFishes.scale.setTo(0.5);
+        //add fish2
+        var sampleFish2 = new Parkour.Fish(this.game, 3455, 400, "pufferFish", undefined);
+        this.jumpingFishes.add(sampleFish2);
+        this.jumpingFishes.scale.setTo(0.5);   
+        //add fish3
+        var sampleFish2 = new Parkour.Fish(this.game, 3855, 400, "pufferFish", undefined);
+        this.jumpingFishes.add(sampleFish2);
+        this.jumpingFishes.scale.setTo(0.5);   
+        //add fish4
+        var sampleFish2 = new Parkour.Fish(this.game, 4000, 400, "pufferFish", undefined);
+        this.jumpingFishes.add(sampleFish2);
+        this.jumpingFishes.scale.setTo(0.5);   
+
+
+        //add friendly cats.
+        this.friendlyCats = this.add.group();
+        var sampleCat = new Parkour.Cats(this.game, 600, this.game.height / 2 + 150, "cat", undefined);
+        sampleCat.animations.add("catWalk", [0, 1], 4, true);
         sampleCat.play("catWalk");
         //sampleCat.tint =  this.tintCatColor;
-        this.enemies.add(sampleCat);
+        this.friendlyCats.add(sampleCat);
 
-        var sampleCat2 = new Parkour.Cats(this.game, 400, this.game.height /2 +150, "cat", undefined);
+        var sampleCat2 = new Parkour.Cats(this.game, 400, this.game.height / 2 + 150, "cat", undefined);
         sampleCat2.animations.add("catWalk", [0, 1], 4, true);
         sampleCat2.play("catWalk");
         //sampleCat2.tint =  this.tintCatColorTwo;
-        this.enemies.add(sampleCat2);
+        this.friendlyCats.add(sampleCat2);
 
         //create hat with throbbing tween
         this.hat = this.add.sprite(2200, this.game.height / 2 - 50, "marioHat");
@@ -346,8 +376,8 @@ Parkour.GameState = {
 
         //tween(target).to(properties, ease, autoStart, delay, repeat)
         var hatTween = this.game.add.tween(this.hat).to({
-            width: 100,
-            height: 60
+            width: 130,
+            height: 80
         }, 1500, "Linear", true, 0, -1);
         //yoyo method gives yoyo effect plays forward then reverses if set to true.
         //if yoyo method is set to false it will repeat without reversing.
@@ -360,7 +390,7 @@ Parkour.GameState = {
         this.pipeWarp.body.moves = false;
 
 
-        this.pipeWarp2 = this.add.sprite(6244, this.game.height -400, "pipeWarp");
+        this.pipeWarp2 = this.add.sprite(6244, this.game.height - 400, "pipeWarp");
         this.game.physics.arcade.enable(this.pipeWarp2);
         this.pipeWarp2.anchor.setTo(0.5);
         this.pipeWarp2.angle = 230;
@@ -374,7 +404,7 @@ Parkour.GameState = {
 
 
         //create player.
-        this.player = this.add.sprite(5040, this.game.height / 2 - 40, 'player', 5);
+        this.player = this.add.sprite(1040, 300, 'player', 5);
         this.player.anchor.setTo(0.5);
         this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
         this.player.animations.add("playerJump", [6, 7], 7, true);
@@ -382,16 +412,16 @@ Parkour.GameState = {
         //create a custom object for the player controls.
         this.player.customParams = {};
         this.player.body.collideWorldBounds = true;
-        this.player.body.bounce.set(1,0);
+        this.player.body.bounce.set(1, 0);
         //follow player with the camera.
         this.game.camera.follow(this.player);
 
 
-        this.barrels = this.add.group();
-        this.barrels.enableBody = true;
+        this.soccerBalls = this.add.group();
+        this.soccerBalls.enableBody = true;
 
-        this.createBarrel();
-        this.barrelCreator = this.game.time.events.loop(Phaser.Timer.SECOND * this.levelData.barrelFrequency, this.createBarrel, this);
+        this.createSoccerBall();
+        this.soccerBallCreator = this.game.time.events.loop(Phaser.Timer.SECOND * this.levelData.soccerBallFrequency, this.createSoccerBall, this);
 
         //make waters group and enable physics on it.
         this.waters = this.add.group();
@@ -409,24 +439,24 @@ Parkour.GameState = {
     },
 
 
-    createBarrel: function (){
+    createSoccerBall: function() {
         //get the first dead sprite.
-        var barrel = this.barrels.getFirstExists(true);
+        var soccerBall = this.soccerBalls.getFirstExists(true);
 
-        if(!barrel){
-            barrel = this.barrels.create(0, 0 , "fire", 0);
+        if (!soccerBall) {
+            soccerBall = this.soccerBalls.create(0, 0, "fire", 0);
         }
 
-        barrel.animations.add("fire", [0,1,2,3],12, true);
-        barrel.scale.x = -1;
-        barrel.play("fire");
-        barrel.body.collideWorldBounds = true;
-        barrel.body.bounce.set(1, 0);
+        soccerBall.animations.add("fire", [0, 1, 2, 3], 12, true);
+        soccerBall.scale.x = -1;
+        soccerBall.play("fire");
+        soccerBall.body.collideWorldBounds = true;
+        soccerBall.body.bounce.set(1, 0);
 
         //{"x": 5804, "y": 200}
-        //barrel.reset(this.levelData.barrelSpawn.x, this.levelData.barrelSpawn.y);
-        barrel.reset(6154, this.game.height/2 - 80);
-        barrel.body.velocity.x = -this.levelData.barrelSpeed;
+        //soccerBall.reset(this.levelData.soccerBallspawn.x, this.levelData.soccerBallspawn.y);
+        soccerBall.reset(6154, this.game.height / 2 - 80);
+        soccerBall.body.velocity.x = -this.levelData.soccerBallspeed;
     },
     //6004
     //150
@@ -446,7 +476,7 @@ Parkour.GameState = {
         this.rightArrow.fixedToCamera = true;
         this.actionButton.fixedToCamera = true;
 
-       
+
         //jump
         this.actionButton.events.onInputDown.add(function() {
             this.player.customParams.mustJump = true;
@@ -499,7 +529,3 @@ Parkour.GameState = {
         }, this);
     }
 };
-
-
-
-
