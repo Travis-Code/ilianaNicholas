@@ -13,6 +13,7 @@ Parkour.winScreenState = {
         var playButton = this.game.add.button(300, this.game.height - 200, "playButton", this.startGame, this);
             playButton.anchor.set(0.5);
             playButton.tint = 0xFCBE12;
+            
 
         //tween(target).to(properties, ease, autoStart, delay, repeat)
         var playButtonTween = this.game.add.tween(playButton).to({
@@ -30,7 +31,7 @@ Parkour.winScreenState = {
         cheer.play();
         this.game.time.events.add(Phaser.Timer.SECOND * 0.4, function() {
             console.log("it werks");
-            this.state.start("Game");
+            this.state.start("TitleScreen");
             //this.fade("PlayGame");
         }, this);
     },

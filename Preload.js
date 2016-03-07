@@ -39,15 +39,10 @@ Parkour.PreloadState = {
         this.load.image('backgroundCity', 'assets/sprites/backgroundPic.png');
         this.load.image('superPKTitle', 'assets/sprites/superPKTitleTwo.png');
         this.load.image('playButton', 'assets/sprites/playButton.png');
-
-        //this.load.image('godzilla', 'assets/sprites/godzillaSpriteProto.png');
-        this.load.spritesheet('godzilla', 'assets/sprites/godZillaAnimate.png', 534, 932);
         this.load.spritesheet('cat', 'assets/sprites/cat.png', 61.9, 47);
         this.load.spritesheet('monster', 'assets/sprites/monsterHair.png', 306.14 ,320 );
         //this.load.spritesheet('monster', 'assets/sprites/monster.png', 389.7 ,408 );
         this.load.spritesheet('smallMonster', 'assets/sprites/smallMonster.png', 76.5 ,80 );
-        this.load.spritesheet('iliNic', 'assets/sprites/iliNic.png', 162 ,20 );
-
         this.load.spritesheet('trampoline', 'assets/sprites/trampolineFixed.png',220, 112);
         this.load.spritesheet('fire', 'assets/sprites/soccerBall.png', 45, 45);
 

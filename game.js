@@ -234,12 +234,12 @@ Parkour.GameState = {
 
     soccerHit: function(player, soccer) {
         if (soccer.body.touching.up) {
-            //cat.kill();
 
         } else {
             soccer.body.velocity.y = -this.BOUNCING_SPEED;
             soccer.body.velocity.x = +this.BOUNCING_SPEED;
-
+            this.game.bgMusic.stop();
+            Parkour.game.state.start('Game');
         }
     },
     loadLevel: function() {

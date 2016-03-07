@@ -30,6 +30,9 @@ Parkour.titleScreenState = {
         this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
         this.game.physics.arcade.enable(this.player);
         this.player.body.velocity.x = playerVelocity;
+        this.player.body.allowGravity = false;
+
+
     },
 
     update: function() {
