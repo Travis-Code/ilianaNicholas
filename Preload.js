@@ -11,7 +11,6 @@ Parkour.PreloadState = {
         this.load.setPreloadSprite(this.loadingBar);
        
         //load assets
-
         //this.load.image("player", "assets/sprites/parkourKid.png");
         this.load.image("arrowButton", "assets/sprites/glassArrow.png");
         this.load.image("actionButton", "assets/sprites/whiteButton.png");
@@ -20,11 +19,12 @@ Parkour.PreloadState = {
         //this.load.spritesheet('fire', 'assets/sprites/fireSpriteSmaller.png', 41, 35);      
         //this.load.image('barrel', 'assets/sprites/barrel.png');
         this.load.image('pufferFish', 'assets/sprites/pufferFish.png');
+        this.load.image("playAgainButton", "assets/sprites/playAgainButton.png");
 
         //this.load.image('goal', 'assets/sprites/gorilla3.png');    
         //this.load.image('platform', 'assets/sprites/platform.png');    
+        this.load.image('winner', 'assets/sprites/winnerPic.png');
         this.load.image('metalPlatform', 'assets/sprites/metalPlatform.png');
-        this.load.image('pole', 'assets/sprites/pole.png');
         this.load.image('ground', 'assets/sprites/ground.png');
         this.load.image('cloud', 'assets/sprites/clouds.png');
         this.load.image('clouds', 'assets/sprites/cloudstile.png');
@@ -43,8 +43,10 @@ Parkour.PreloadState = {
         //this.load.image('godzilla', 'assets/sprites/godzillaSpriteProto.png');
         this.load.spritesheet('godzilla', 'assets/sprites/godZillaAnimate.png', 534, 932);
         this.load.spritesheet('cat', 'assets/sprites/cat.png', 61.9, 47);
-        this.load.spritesheet('monster', 'assets/sprites/monster.png', 389.7 ,408 );
+        this.load.spritesheet('monster', 'assets/sprites/monsterHair.png', 306.14 ,320 );
+        //this.load.spritesheet('monster', 'assets/sprites/monster.png', 389.7 ,408 );
         this.load.spritesheet('smallMonster', 'assets/sprites/smallMonster.png', 76.5 ,80 );
+        this.load.spritesheet('iliNic', 'assets/sprites/iliNic.png', 162 ,20 );
 
         this.load.spritesheet('trampoline', 'assets/sprites/trampolineFixed.png',220, 112);
         this.load.spritesheet('fire', 'assets/sprites/soccerBall.png', 45, 45);

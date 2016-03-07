@@ -110,12 +110,11 @@ Parkour.GameState = {
 
         if (this.playerAlive) {
             this.game.physics.arcade.overlap(this.player, this.hat, null, function(p, h) {
-                //this.game.bgMusic.stop();
+                this.game.bgMusic.stop();
                 console.log('got the hat!');
                 this.cheer.play();
-
                 this.hat.destroy();
-                //this.loadGodzilla();
+                Parkour.game.state.start('Win');
             }, this);
         }
 
@@ -145,8 +144,6 @@ Parkour.GameState = {
             this.player.body.velocity.y = -this.JUMPING_SPEED;
         }, this);
 
-       
-
         if (this.cursors.left.isDown || this.player.customParams.isMovingLeft) {
             this.player.body.velocity.x = -this.RUNNING_SPEED;
             this.player.scale.setTo(-1, 1);
@@ -172,28 +169,6 @@ Parkour.GameState = {
             jumper.play();
         }
     },
-
-    /* loadGodzilla :function(){
-     //create godzilla.
-         this.godzilla = this.add.sprite(1000, this.game.height / 2 - 120, 'godzilla');
-         var yummy = this.godzilla.animations.add("yummy", [0,1], 4, true);
-         this.godzilla.play("yummy");
-         this.game.physics.arcade.enable(this.godzilla);
-         this.godzilla.body.velocity.x = this.levelData.godzillaSpeed;
-         this.godzilla.immovable = true;
-         //this.godzilla.body.moves = false;
-         this.godzilla.body.allowGravity = false;
-         console.log("GODZILLA IS COMING!");
-         if(this.godzilla.body.y > this.game.height){
-             this.godzilla.destroy();
-             console.log("godzilla is dead");
-         } 
-
-          this.game.physics.arcade.overlap(this.godzilla, this.pipeWarp, null, function(g, p) {
-             this.pipeWarp.body.immovable = false;
-             this.pipeWarp.destroy();
-         },this);
-     },*/
 
  
      hitTramp:function(player, trampoline){
@@ -351,6 +326,9 @@ Parkour.GameState = {
 
         //add danger sign to the game.
         this.danger = this.add.sprite(1600, this.game.height / 2 - 120, "danger");
+        this.danger.anchor.set(0.5);
+
+        this.pipeWarp = this.add.sprite(2200, this.game.height / 2 + 100, "pipeWarp");
 
         //create starting box.
         this.box = this.add.sprite(10, this.game.height / 2 + 200, "box");
@@ -358,7 +336,6 @@ Parkour.GameState = {
         this.box.body.allowGravity = false;
         this.box.immovable = true;
         this.box.body.moves = false;
-
 
          //add fish1a
         this.jumpingFishes = this.add.group();
@@ -434,7 +411,7 @@ Parkour.GameState = {
         this.friendlyCats.add(sampleCat2);
 
         //create hat with throbbing tween
-        this.hat = this.add.sprite(2200, this.game.height / 2 - 50, "marioHat");
+        this.hat = this.add.sprite(7200, 300, "marioHat");
         this.hat.anchor.set(0.5);
         this.game.physics.arcade.enable(this.hat);
         this.hat.body.allowGravity = false;
@@ -468,7 +445,7 @@ Parkour.GameState = {
         //this.player.animations.add('playerWalking', [0, 1, 2, 1], 6, true);
 
         //create player.
-        this.player = this.add.sprite(4000, 300, 'player', 5);
+        this.player = this.add.sprite(40, 310, 'player', 5);
         this.player.anchor.setTo(0.5);
         this.player.animations.add("player", [0, 1, 2, 3, 4, 5], 7, true);
         this.player.animations.add("playerJump", [6, 7], 7, true);
